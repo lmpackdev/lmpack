@@ -12,6 +12,14 @@
   ],
   "license": "MIT",
   "author": "lmpackdev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmpackdev/lmpack.git"
+  },
+  "homepage": "https://github.com/lmpackdev/lmpack#readme",
+  "bugs": {
+    "url": "https://github.com/lmpackdev/lmpack/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=22.12"
@@ -30,6 +38,7 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {
