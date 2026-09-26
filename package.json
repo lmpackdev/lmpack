@@ -1,0 +1,65 @@
+{
+  "name": "lmpack",
+  "version": "0.1.0",
+  "description": "Pack project files into one bundle for a language model, within a token budget, with a report of what was left out.",
+  "keywords": [
+    "llm",
+    "context",
+    "prompt",
+    "tokens",
+    "cli",
+    "codebase"
+  ],
+  "license": "MIT",
+  "author": "lmpackdev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmpackdev/lmpack.git"
+  },
+  "homepage": "https://github.com/lmpackdev/lmpack#readme",
+  "bugs": {
+    "url": "https://github.com/lmpackdev/lmpack/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "bin": {
+    "lmpack": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm test"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "gpt-tokenizer": "^4.0.0",
+    "ignore": "^7.0.10",
+    "picomatch": "^4.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "@types/picomatch": "^4.0.3",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.2"
+  }
+}
