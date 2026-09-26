@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/lmpackdev/lmpack.git"
   },
-  "homepage": "https://github.com/lmpackdev/lmpack#readme",
+  "homepage": "https://lmpack.org",
   "bugs": {
     "url": "https://github.com/lmpackdev/lmpack/issues"
   },

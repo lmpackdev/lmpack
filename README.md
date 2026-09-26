@@ -5,6 +5,8 @@ selects files by masks and `.gitignore`, counts tokens with a real tokenizer,
 fits the result into a token budget, and prints a report of what was left out
 and why.
 
+Documentation: [lmpack.org](https://lmpack.org)
+
 ```bash
 npx lmpack pack --budget 120k --out pack.md
 ```

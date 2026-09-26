@@ -1,0 +1,96 @@
+---
+title: Overview
+description: What lmpack does, when to use it, and how it compares to repomix, files-to-prompt, code2prompt and ctxpack.
+---
+
+`lmpack` packs a project into one file for a language model. It walks the
+tree, selects files by globs and `.gitignore`, counts tokens with a real
+tokenizer, fits the result into a token budget, and prints a report of what
+was left out and why.
+
+```bash
+npx lmpack pack --budget 120k --out pack.md
+```
+
+## The problem
+
+To show a project to a model, people open a dozen files and paste them into a
+chat. Sooner or later a `node_modules` file or a database dump slips in, the
+context limit is hit, and pieces get thrown out at random. The next day the
+same selection cannot be repeated, and nobody knows what the model did not see.
+
+`lmpack` does this in one command, the same way every time, and writes down
+what it dropped.
+
+## What it does
+
+- **Fits a token budget.** `--budget 120k` drops files by category priority,
+  largest first, then puts back whatever still fits. The final pack is
+  re-counted, so it never exceeds the budget. See [Budget](/guides/budget/).
+- **Reports what was left out.** Every skipped file gets a line with a reason:
+  budget, size, binary, secret, ignored, lock file, symlink.
+- **Packs only what changed.** `--git-diff main` selects files changed since
+  the branch point, plus files in the same directories. See
+  [Recipes](/guides/recipes/#review-a-branch).
+- **Filters secrets by default.** `.env`, `*.pem`, `id_*`, PEM private keys and
+  others never reach the pack unless you pass `--allow-secrets`. See
+  [Secret filter](/guides/security-filter/).
+- **Repeats a selection.** Profiles in `lmpack.json` give the same result today
+  and next month. See [Profiles](/guides/profiles/).
+- **Works offline.** No network access, no telemetry, no update checks.
+
+## What it is not
+
+Not a code index or a search engine. Not RAG: no embeddings, no state between
+runs. Not an API client: the pack goes to a file or stdout, and you decide
+where to send it.
+
+## Compared to other tools
+
+Several tools pack a repository for a model. The table covers what each one
+documents; checked against their READMEs and docs on 2026-09-26. If something
+here is out of date, please [open an issue](https://github.com/lmpackdev/lmpack/issues).
+
+| | lmpack | repomix | files-to-prompt | code2prompt |
+|---|---|---|---|---|
+| Runtime | Node.js | Node.js | Python | Rust (+ Python SDK) |
+| Output formats | markdown, xml | xml, markdown, json, plain | plain, markdown, Claude XML | markdown, json, xml, Handlebars templates |
+| Token counting | o200k, cl100k, p50k, r50k | o200k, cl100k | no | tiktoken encodings |
+| Token budget | drops files to fit, exit code `2` | `--token-budget` fails when exceeded, output unchanged | no | no |
+| Report of skipped files | every file with a reason | suspicious files | no | no |
+| Git | only changed files (+ neighbors) | adds diff and log sections | no | adds diff and log between branches |
+| Secret filter | on by default: file names, PEM keys and certificates | on by default: Secretlint content scan | no | no |
+| Code compression | no | Tree-sitter `--compress` | no | no |
+| Remote repositories | no | `--remote` | no | no |
+| MCP server | no | yes | no | yes |
+
+Where the others are stronger:
+
+- **repomix** is the most complete tool in this space. Its secret check scans
+  file contents with [Secretlint](https://github.com/secretlint/secretlint) and
+  catches API keys, tokens and connection strings inside ordinary files;
+  `lmpack` only looks at file names and PEM armor. It also compresses code with
+  Tree-sitter, packs remote repositories, splits output, and runs as an MCP
+  server.
+- **code2prompt** has Handlebars templates, a TUI and a token map of the tree.
+- **files-to-prompt** is a small, dependable Python tool; if you do not need
+  token counts, it is enough.
+
+Where `lmpack` is different:
+
+- The budget is enforced by dropping files in a defined order, and the report
+  says which files went and how many tokens that freed. The others either do
+  not count against a limit or only fail when it is exceeded.
+- `--git-diff` changes *which files* are packed. The others add a diff section
+  next to the full selection.
+- Exit code `2` lets a script notice that the pack is incomplete.
+
+**ctxpack** is sometimes mentioned alongside these, but it solves a different
+problem: it indexes repositories, runs semantic search, and answers questions
+through a connected model provider. `lmpack` produces a file and never talks
+to a model.
+
+## Next
+
+- [Install](/installation/) and run the [quick start](/quick-start/).
+- Look up every flag in the [CLI reference](/reference/cli/).
