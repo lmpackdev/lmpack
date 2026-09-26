@@ -36,6 +36,38 @@ describe('selection by masks', () => {
   });
 });
 
+describe('lock files', () => {
+  const tree = {
+    'package.json': '{}\n',
+    'package-lock.json': '{"lockfileVersion": 3}\n',
+    'src/a.ts': 'a\n',
+    'rust/Cargo.lock': 'version = 3\n',
+  };
+
+  it('skips lock files by default and says why', async () => {
+    const root = await makeProject(tree);
+    const r = await packProject({ path: root });
+    expect(paths(r)).toEqual(['package.json', 'src/a.ts']);
+    expect(r.skipped).toEqual([
+      { path: 'package-lock.json', reason: 'lockfile', detail: 'pass --include to pack it' },
+      { path: 'rust/Cargo.lock', reason: 'lockfile', detail: 'pass --include to pack it' },
+    ]);
+  });
+
+  it('packs a lock file named by --include', async () => {
+    const root = await makeProject(tree);
+    const r = await packProject({ path: root, include: ['package-lock.json', 'src/**'] });
+    expect(paths(r)).toEqual(['package-lock.json', 'src/a.ts']);
+  });
+
+  it('still skips lock files that --include does not match', async () => {
+    const root = await makeProject(tree);
+    const r = await packProject({ path: root, include: ['src/**', 'package.json'] });
+    expect(paths(r)).toEqual(['package.json', 'src/a.ts']);
+    expect(r.skipped.filter((s) => s.reason === 'lockfile')).toEqual([]);
+  });
+});
+
 describe('ignore files', () => {
   it('honors .gitignore, nested .lmpackignore and negation', async () => {
     const root = await makeProject({

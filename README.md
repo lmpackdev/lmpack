@@ -133,6 +133,10 @@ with it.
 - Anything matched by `.gitignore` (including those in parent directories up
   to the repository root) or `.lmpackignore`; `node_modules/` and VCS
   directories always.
+- Dependency lock files (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`,
+  `Cargo.lock`, `poetry.lock`, `go.sum` and others): machine-generated and
+  large, while the manifest next to them already lists the dependencies. Name
+  one in `--include` to pack it.
 - Symlinks: reported, never followed.
 - Binary files (NUL bytes or invalid UTF-8 in the first 8 KB), other
   non-UTF-8 text, UTF-16 files.

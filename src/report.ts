@@ -73,7 +73,7 @@ export function renderReport(result: PackResult): string {
 }
 
 function printTable(rows: Skipped[], line: (s: string) => void): void {
-  const order = ['secret', 'ignored', 'symlink', 'size', 'binary', 'non-utf8', 'long-line', 'empty', 'unreadable'];
+  const order = ['secret', 'ignored', 'lockfile', 'symlink', 'size', 'binary', 'non-utf8', 'long-line', 'empty', 'unreadable'];
   const sorted = [...rows].sort(
     (a, b) => order.indexOf(a.reason) - order.indexOf(b.reason) || (a.path < b.path ? -1 : 1),
   );

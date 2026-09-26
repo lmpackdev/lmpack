@@ -3,6 +3,7 @@ export type Format = 'md' | 'xml';
 /** Why a file (or directory) did not make it into the pack. */
 export type SkipReason =
   | 'ignored'
+  | 'lockfile'
   | 'symlink'
   | 'secret'
   | 'size'

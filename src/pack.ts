@@ -5,6 +5,7 @@ import { resolveOptions, type PackInput } from './config.js';
 import { decodeContent } from './content.js';
 import { changedFiles, dirOf } from './git.js';
 import { secretByContent, secretByName } from './guard.js';
+import { isLockfile } from './lockfiles.js';
 import { renderers } from './render/index.js';
 import { loadTokenizer } from './tokenize.js';
 import type { Note, PackedFile, PackResult, ResolvedOptions, Skipped } from './types.js';
@@ -31,6 +32,10 @@ export async function pack(options: ResolvedOptions): Promise<PackResult> {
   let selected = walked.files.filter((p) => {
     if (o.include.length && !included(p)) return unselected.notIncluded++, false;
     if (excluded(p)) return unselected.excluded++, false;
+    if (isLockfile(p) && !(o.include.length && included(p))) {
+      skipped.push({ path: p, reason: 'lockfile', detail: 'pass --include to pack it' });
+      return false;
+    }
     return true;
   });
 

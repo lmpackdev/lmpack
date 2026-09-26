@@ -4,6 +4,7 @@ export type { PackInput, ConfigFile, ConfigSettings } from './config.js';
 export { renderReport } from './report.js';
 export { exitCodeFor } from './exit.js';
 export { SECRET_NAME_MASKS } from './guard.js';
+export { LOCKFILES } from './lockfiles.js';
 export { TOKENIZERS } from './tokenize.js';
 export { parseTokens, parseBytes } from './units.js';
 export { VERSION } from './version.js';
