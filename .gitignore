@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+*.tgz
+.astro/
+docs/dist/
+docs/node_modules/
+pack.md
+pack.xml
