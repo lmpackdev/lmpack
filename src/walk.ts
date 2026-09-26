@@ -172,6 +172,10 @@ function ignoredSource(layers: Layer[], abs: string, isDir: boolean): string | n
  */
 export function makeMatcher(masks: string[]): (p: string) => boolean {
   if (!masks.length) return () => false;
-  const m = picomatch(masks, { dot: true, basename: true });
-  return (p) => m(p);
+  // picomatch's own `basename` option also breaks masks with a slash, so split them.
+  const byName = masks.filter((m) => !m.includes('/'));
+  const byPath = masks.filter((m) => m.includes('/'));
+  const name = byName.length ? picomatch(byName, { dot: true }) : () => false;
+  const full = byPath.length ? picomatch(byPath, { dot: true }) : () => false;
+  return (p) => full(p) || name(p.slice(p.lastIndexOf('/') + 1));
 }
